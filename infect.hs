@@ -1,3 +1,6 @@
+setNodeCost :: [Char] -> [([Char], Float)] -> Float -> [([Char], Float)]
+setNodeCost name nodes value = map (\node -> if fst node == name then (name, value) else node) nodes
+
 getNodeCost :: [Char] -> [([Char], Float)] -> Float
 getNodeCost name nodes = snd (head (filter (\node ->  fst node == name) nodes))
 
@@ -12,6 +15,5 @@ pruneTree :: ([Char], [Char]) -> [(([Char], [Char]), Float)] -> [([Char], Float)
 pruneTree (origin, destiny) relations nodes queue
     | (getNodeCost destiny nodes) > ((getNodeCost origin nodes) + (getRelationWeight (origin, destiny) relations)) = queue++[destiny] -- Se o candidato valer a pena, adicionar na fila
     | otherwise = queue
-    
     
 
