@@ -7,8 +7,11 @@ getRelationWeight (origin, destiny) relations = snd (head (filter (\relation -> 
 finalResult :: [([Char], Float)] -> Float
 finalResult nodes = maximum (map (\nodes -> snd nodes) nodes)
 
-
-
--- Poda a árvore de busca, selecionando apenas os caminhos que valem a pena
--- pruneTree origin destiny queue = soma o peso da relacao de origem pra destino, se o candidato valer a pena, adicionar na fila
+-- Poda a árvore de busca, selecionando apenas os caminhos que valem a pena.
+pruneTree :: ([Char], [Char]) -> [(([Char], [Char]), Float)] -> [([Char], Float)] -> [[Char]] -> [[Char]]
+pruneTree (origin, destiny) relations nodes queue
+    | (getNodeCost destiny nodes) > ((getNodeCost origin nodes) + (getRelationWeight (origin, destiny) relations)) = queue++[destiny] -- Se o candidato valer a pena, adicionar na fila
+    | otherwise = queue
+    
+    
 
