@@ -7,14 +7,24 @@ getNodeCost name nodes = snd (head (filter (\node ->  fst node == name) nodes))
 getRelationWeight :: ([Char], [Char]) -> [(([Char], [Char]), Float)] -> Float
 getRelationWeight (origin, destiny) relations = snd (head (filter (\relation ->  fst relation == (origin, destiny)) relations))
 
+removeFromQueue :: [Char] -> [[Char]] -> [[Char]]
+removeFromQueue name queue = filter (\item -> item /= name) queue
+
+createOriginDestinyList :: [(([Char], [Char]), Float)] -> [([Char], Float)] -> [[Char]] -> [([Char], [Char])]
+createOriginDestinyList relations nodes queue = map (\destiny -> ((head queue), destiny)) (getDestinies (head queue) relations)
+
+-- get all the destinies that has origin "origin"
+getDestinies :: [Char] -> [(([Char], [Char]), Float)] -> [[Char]]
+getDestinies origin relations = map (\((origin, destiny), weight) -> destiny) (filter (\relation ->  fst (fst relation) == origin) relations)
+
 finalResult :: [([Char], Float)] -> Float
 finalResult nodes = maximum (map (\nodes -> snd nodes) nodes)
 
 -- Poda a árvore de busca, selecionando apenas os caminhos que valem a pena.
 pruneTree :: ([Char], [Char]) -> [(([Char], [Char]), Float)] -> [([Char], Float)] -> [[Char]] -> [[Char]]
 pruneTree (origin, destiny) relations nodes queue
-    | isWorth (origin, destiny) relations nodes = queue++[destiny] -- Se o candidato valer a pena, adicionar na fila
-    | otherwise = queue
+    | isWorth (origin, destiny) relations nodes = queue -- Se o candidato valer a pena deixe como está
+    | otherwise = removeFromQueue destiny queue -- caso contrário, remova ele da fila
     
 pathCost :: ([Char], [Char]) -> [(([Char], [Char]), Float)] -> [([Char], Float)] -> Float
 pathCost (origin, destiny) relations nodes = ((getNodeCost origin nodes) + (getRelationWeight (origin, destiny) relations))
@@ -35,6 +45,9 @@ updateCostIfWorth (origin, destiny) relations nodes
 step :: ([Char], [Char]) -> [(([Char], [Char]), Float)] -> [([Char], Float)] -> [[Char]] -> ([([Char], Float)], [[Char]])
 step (origin, destiny) relations nodes queue = (updateCostIfWorth (origin, destiny) relations nodes, pruneTree (origin, destiny) relations nodes queue)
 
+
+
+--- FE que colocou isso aqui ----
 -- cria a tupla para representar o grafo e as distâncias dos nós
 interpreter :: [String] -> ([(String, Float)], [((String, String), Float)])
 interpreter lista = (createDistances lista [], createRelations lista)
@@ -63,3 +76,11 @@ createTuple name list
 createRelations :: [String] ->  [((String, String), Float)]
 createRelations [nome] = []
 createRelations (nome1:nome2:dist:rest) = [((nome1, nome2), (read dist :: Float)), ((nome2, nome1), (read dist :: Float))] ++ createRelations rest
+
+
+
+
+
+-- escolhe o primeiro da fila e executa getDestinies, depois execute step com todos a origem e destinos obtidos
+-- wrapper _ _ nodes [] = (nodes, [])
+--wrapper relations nodes queue = foldl (\relation -> step relation relations nodes queue) (nodes, queue) 
