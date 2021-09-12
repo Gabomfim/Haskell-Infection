@@ -7,6 +7,9 @@ getNodeCost name nodes = snd (head (filter (\node ->  fst node == name) nodes))
 getRelationWeight :: ([Char], [Char]) -> [(([Char], [Char]), Float)] -> Float
 getRelationWeight (origin, destiny) relations = snd (head (filter (\relation ->  fst relation == (origin, destiny)) relations))
 
+removeFromQueue :: [Char] -> [[Char]] -> [[Char]]
+removeFromQueue name queue = filter (\item -> item /= name) queue
+
 -- get all the destinies that has origin "origin"
 getDestinies :: [Char] -> [(([Char], [Char]), Float)] -> [[Char]]
 getDestinies origin relations = map (\((origin, destiny), weight) -> destiny) (filter (\relation ->  fst (fst relation) == origin) relations)
@@ -17,8 +20,8 @@ finalResult nodes = maximum (map (\nodes -> snd nodes) nodes)
 -- Poda a árvore de busca, selecionando apenas os caminhos que valem a pena.
 pruneTree :: ([Char], [Char]) -> [(([Char], [Char]), Float)] -> [([Char], Float)] -> [[Char]] -> [[Char]]
 pruneTree (origin, destiny) relations nodes queue
-    | isWorth (origin, destiny) relations nodes = queue++[destiny] -- Se o candidato valer a pena, adicionar na fila
-    | otherwise = queue
+    | isWorth (origin, destiny) relations nodes = queue -- Se o candidato valer a pena deixe como está
+    | otherwise = removeFromQueue destiny queue -- caso contrário, remova ele da fila
     
 pathCost :: ([Char], [Char]) -> [(([Char], [Char]), Float)] -> [([Char], Float)] -> Float
 pathCost (origin, destiny) relations nodes = ((getNodeCost origin nodes) + (getRelationWeight (origin, destiny) relations))
