@@ -7,6 +7,10 @@ getNodeCost name nodes = snd (head (filter (\node ->  fst node == name) nodes))
 getRelationWeight :: ([Char], [Char]) -> [(([Char], [Char]), Float)] -> Float
 getRelationWeight (origin, destiny) relations = snd (head (filter (\relation ->  fst relation == (origin, destiny)) relations))
 
+-- get all the destinies that has origin "origin"
+getDestinies :: [Char] -> [(([Char], [Char]), Float)] -> [[Char]]
+getDestinies origin relations = map (\((origin, destiny), weight) -> destiny) (filter (\relation ->  fst (fst relation) == origin) relations)
+
 finalResult :: [([Char], Float)] -> Float
 finalResult nodes = maximum (map (\nodes -> snd nodes) nodes)
 
@@ -34,3 +38,10 @@ updateCostIfWorth (origin, destiny) relations nodes
 -- Executa updateCostIfWorth e pruneTree. Devolve uma tupla com os resultados.
 step :: ([Char], [Char]) -> [(([Char], [Char]), Float)] -> [([Char], Float)] -> [[Char]] -> ([([Char], Float)], [[Char]])
 step (origin, destiny) relations nodes queue = (updateCostIfWorth (origin, destiny) relations nodes, pruneTree (origin, destiny) relations nodes queue)
+
+-- Adiciona itens conectados à origem na fila.
+-- enqueue = 
+
+-- Executa um step pra cada item da lista
+-- wrapper _ _ _ [] = ([],[])
+-- wrapper (origin, destiny) relations nodes queue = step (origin, destiny) relations nodes queue)
