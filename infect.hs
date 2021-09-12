@@ -25,6 +25,6 @@ isWorth (origin, destiny) relations nodes
     | otherwise = False
 
 
-
---updateCostIfWorth (origin, destiny) relations nodes
---    | setNodeCost isWorth (origin, destiny) relations nodes
+updateCostIfWorth (origin, destiny) relations nodes
+    | isWorth (origin, destiny) relations nodes = setNodeCost destiny nodes (pathCost (origin, destiny) relations nodes)
+    | otherwise = nodes
