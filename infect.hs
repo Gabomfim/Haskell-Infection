@@ -10,6 +10,7 @@ getRelationWeight (origin, destiny) relations = snd (head (filter (\relation -> 
 removeFromQueue :: [Char] -> [[Char]] -> [[Char]]
 removeFromQueue name queue = filter (\item -> item /= name) queue
 
+createOriginDestinyList :: [(([Char], [Char]), Float)] -> [([Char], Float)] -> [[Char]] -> [([Char], [Char])]
 createOriginDestinyList relations nodes queue = map (\destiny -> ((head queue), destiny)) (getDestinies (head queue) relations)
 
 -- get all the destinies that has origin "origin"
