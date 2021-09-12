@@ -34,3 +34,32 @@ updateCostIfWorth (origin, destiny) relations nodes
 -- Executa updateCostIfWorth e pruneTree. Devolve uma tupla com os resultados.
 step :: ([Char], [Char]) -> [(([Char], [Char]), Float)] -> [([Char], Float)] -> [[Char]] -> ([([Char], Float)], [[Char]])
 step (origin, destiny) relations nodes queue = (updateCostIfWorth (origin, destiny) relations nodes, pruneTree (origin, destiny) relations nodes queue)
+
+-- cria a tupla para representar o grafo e as distâncias dos nós
+interpreter :: [String] -> ([(String, Float)], [((String, String), Float)])
+interpreter lista = (createDistances lista [], createRelations lista)
+
+-- cria um vetor de tuplas (nome, dist) que representam os nos e suas distancias
+createDistances :: [String] -> [(String, Float)] -> [(String, Float)]
+-- entrada chegou no final, coloca o nó inicial com distância 0
+createDistances [nome] distancias = setNodeCost nome distancias 0
+createDistances (nome1:nome2:dist:rest) distancias =  createDistances rest dist
+    where dist = distancias ++ (createTuple nome1 distancias) ++ (createTuple nome2 distancias)
+
+--função auxiliar para checar se nome existe em tupla de nos
+checkName :: String -> [(String, Float)] -> Bool
+checkName name [] = False
+checkName name (a:as)
+    | name == fst a = True
+    | otherwise = checkName name as
+
+-- cria tupla se nome não estiver presente no vetor original
+createTuple :: String -> [(String, Float)] -> [(String, Float)]
+createTuple name list 
+    | checkName name list = []
+    | otherwise = [(name, 1/0)]
+
+-- cria um vetor de ((nome, nome), dist) que representa as arestas do grafo
+createRelations :: [String] ->  [((String, String), Float)]
+createRelations [nome] = []
+createRelations (nome1:nome2:dist:rest) = [((nome1, nome2), (read dist :: Float)), ((nome2, nome1), (read dist :: Float))] ++ createRelations rest
