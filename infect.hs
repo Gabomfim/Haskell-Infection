@@ -10,6 +10,8 @@ getRelationWeight (origin, destiny) relations = snd (head (filter (\relation -> 
 removeFromQueue :: [Char] -> [[Char]] -> [[Char]]
 removeFromQueue name queue = filter (\item -> item /= name) queue
 
+createOriginDestinyList relations nodes queue = map (\destiny -> ((head queue), destiny)) (getDestinies (head queue) relations)
+
 -- get all the destinies that has origin "origin"
 getDestinies :: [Char] -> [(([Char], [Char]), Float)] -> [[Char]]
 getDestinies origin relations = map (\((origin, destiny), weight) -> destiny) (filter (\relation ->  fst (fst relation) == origin) relations)
@@ -42,9 +44,6 @@ updateCostIfWorth (origin, destiny) relations nodes
 step :: ([Char], [Char]) -> [(([Char], [Char]), Float)] -> [([Char], Float)] -> [[Char]] -> ([([Char], Float)], [[Char]])
 step (origin, destiny) relations nodes queue = (updateCostIfWorth (origin, destiny) relations nodes, pruneTree (origin, destiny) relations nodes queue)
 
--- Adiciona itens conectados à origem na fila.
--- enqueue = 
-
--- Executa um step pra cada item da lista
--- wrapper _ _ _ [] = ([],[])
--- wrapper (origin, destiny) relations nodes queue = step (origin, destiny) relations nodes queue)
+-- escolhe o primeiro da fila e executa getDestinies, depois execute step com todos a origem e destinos obtidos
+-- wrapper _ _ nodes [] = (nodes, [])
+--wrapper relations nodes queue = foldl (\relation -> step relation relations nodes queue) (nodes, queue) 
