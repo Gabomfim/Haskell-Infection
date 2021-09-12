@@ -19,12 +19,18 @@ pruneTree (origin, destiny) relations nodes queue
 pathCost :: ([Char], [Char]) -> [(([Char], [Char]), Float)] -> [([Char], Float)] -> Float
 pathCost (origin, destiny) relations nodes = ((getNodeCost origin nodes) + (getRelationWeight (origin, destiny) relations))
 
+
 isWorth :: ([Char], [Char]) -> [(([Char], [Char]), Float)] -> [([Char], Float)] -> Bool
 isWorth (origin, destiny) relations nodes
     | (getNodeCost destiny nodes) > pathCost (origin, destiny) relations nodes = True
     | otherwise = False
 
-
+-- Atualiza o custo de um nó se valer a pena
+updateCostIfWorth :: ([Char], [Char]) -> [(([Char], [Char]), Float)] -> [([Char], Float)] -> [([Char], Float)]
 updateCostIfWorth (origin, destiny) relations nodes
     | isWorth (origin, destiny) relations nodes = setNodeCost destiny nodes (pathCost (origin, destiny) relations nodes)
     | otherwise = nodes
+
+-- Executa updateCostIfWorth e pruneTree. Devolve uma tupla com os resultados.
+step :: ([Char], [Char]) -> [(([Char], [Char]), Float)] -> [([Char], Float)] -> [[Char]] -> ([([Char], Float)], [[Char]])
+step (origin, destiny) relations nodes queue = (updateCostIfWorth (origin, destiny) relations nodes, pruneTree (origin, destiny) relations nodes queue)
