@@ -13,7 +13,7 @@ finalResult nodes = maximum (map (\nodes -> snd nodes) nodes)
 -- Poda a árvore de busca, selecionando apenas os caminhos que valem a pena.
 pruneTree :: ([Char], [Char]) -> [(([Char], [Char]), Float)] -> [([Char], Float)] -> [[Char]] -> [[Char]]
 pruneTree (origin, destiny) relations nodes queue
-    | (getNodeCost destiny nodes) > pathCost (origin, destiny) relations nodes = queue++[destiny] -- Se o candidato valer a pena, adicionar na fila
+    | isWorth (origin, destiny) relations nodes = queue++[destiny] -- Se o candidato valer a pena, adicionar na fila
     | otherwise = queue
     
 pathCost :: ([Char], [Char]) -> [(([Char], [Char]), Float)] -> [([Char], Float)] -> Float
@@ -26,4 +26,5 @@ isWorth (origin, destiny) relations nodes
 
 
 
--- updateCostIfWorth = setNodeCost pathCost (origin, destiny) relations nodes
+--updateCostIfWorth (origin, destiny) relations nodes
+--    | setNodeCost isWorth (origin, destiny) relations nodes
