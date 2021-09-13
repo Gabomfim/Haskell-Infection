@@ -1,3 +1,15 @@
+import System.IO  
+import Control.Monad
+import Data.List
+
+receive = do  
+        let list = []
+        handle <- openFile "in1.txt" ReadMode
+        contents <- hGetContents handle
+        let singlewords = words contents
+        print singlewords
+
+
 
 -- AUX METHODS --
 
