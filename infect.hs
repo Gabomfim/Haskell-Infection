@@ -65,3 +65,6 @@ wrapper relations (nodes, queue) originDestinyList = (\(n, q) -> wrapper relatio
 -- começa o algoritmo | queue deve conter apenas o infectado | nodes devem começar todos com infinito, menos o infectado, que deve ter peso 0.
 run :: [(([Char], [Char]), Float)] -> ([([Char], Float)], [[Char]]) -> Float
 run relations (nodes, queue) = finalResult (fst (wrapper relations (nodes, queue) (createOriginDestinyList relations nodes queue)))
+
+-- TESTCASE:
+-- run [(("a", "b"), 2), (("b", "a"), 2), (("a", "c"), 3), (("c", "a"), 3), (("c", "d"), 4), (("d", "c"), 4)] ([("a", 0) , ("b", 1/0), ("c", 1/0), ("d", 1/0)], ["a"])
