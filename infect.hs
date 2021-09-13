@@ -25,13 +25,13 @@ getDestinies origin relations = map (\((origin, destiny), weight) -> destiny) (f
 -- INPUT --
 
 -- cria a tupla para representar o grafo e as distâncias dos nós
-interpreter :: [String] -> ([(String, Float)], [((String, String), Float)])
+interpreter :: [String] -> (([(String, Float)], [String]), [((String, String), Float)])
 interpreter lista = (patientZero lista [], createRelations lista)
 
 -- cria um vetor de tuplas (nome, dist) que representam os nos e suas distancias
-patientZero :: [String] -> [(String, Float)] -> [(String, Float)]
+patientZero :: [String] -> [(String, Float)] -> ([(String, Float)], [String])
 -- entrada chegou no final, coloca o nó inicial com distância 0, coloca o infectado numa fila e retorna
-patientZero [nome] distancias = setNodeCost nome distancias 0
+patientZero [nome] distancias = ((setNodeCost nome distancias 0), [nome])
 patientZero (nome1:nome2:dist:rest) distancias =  patientZero rest dist
     where dist = distancias ++ (createTuple nome1 distancias) ++ (createTuple nome2 distancias)
 
@@ -104,3 +104,4 @@ run relations (nodes, queue) = finalResult (fst (wrapper relations (nodes, queue
 
 -- TESTCASE:
 -- run [(("a", "b"), 2), (("b", "a"), 2), (("a", "c"), 3), (("c", "a"), 3), (("c", "d"), 4), (("d", "c"), 4)] ([("a", 0) , ("b", 1/0), ("c", 1/0), ("d", 1/0)], ["a"])
+-- interpreter ["a", "b", "2", "b", "a", "2", "a", "c", "3", "c", "a", "3", "c", "d", "4", "d", "c", "4", "a"]
