@@ -2,12 +2,16 @@ import System.IO
 import Control.Monad
 import Data.List
 
-receive = do  
-        let list = []
+main = do  
         handle <- openFile "in1.txt" ReadMode
         contents <- hGetContents handle
-        let singlewords = words contents
-        print singlewords
+        let list_pacients = words contents
+        let tuples = interpreter list_pacients
+        let fifo = fst(fst tuples)
+        let infected = snd(fst tuples)
+        let relation = snd tuples
+        let time = run relation (fifo, infected)
+        print time
 
 
 
@@ -63,7 +67,7 @@ createTuple name list
 -- cria um vetor de ((nome, nome), dist) que representa as arestas do grafo
 createRelations :: [String] ->  [((String, String), Float)]
 createRelations [nome] = []
-createRelations (nome1:nome2:freq:rest) = [((nome1, nome2), ((\frq -> 1/frq) (read freq :: Float))), ((nome2, nome1), ((\frq -> 1/frq) (read freq :: Float)))] ++ createRelations rest
+createRelations (nome1:nome2:dist:rest) = [((nome1, nome2), (read dist :: Float)), ((nome2, nome1), (read dist :: Float))] ++ createRelations rest
 
 
 -- ALGORITMO --
