@@ -68,3 +68,42 @@ run relations (nodes, queue) = finalResult (fst (wrapper relations (nodes, queue
 
 -- TESTCASE:
 -- run [(("a", "b"), 2), (("b", "a"), 2), (("a", "c"), 3), (("c", "a"), 3), (("c", "d"), 4), (("d", "c"), 4)] ([("a", 0) , ("b", 1/0), ("c", 1/0), ("d", 1/0)], ["a"])
+
+
+--- FE que colocou isso aqui ----
+-- cria a tupla para representar o grafo e as distâncias dos nós
+interpreter :: [String] -> ([(String, Float)], [((String, String), Float)])
+interpreter lista = (createDistances lista [], createRelations lista)
+
+-- cria um vetor de tuplas (nome, dist) que representam os nos e suas distancias
+createDistances :: [String] -> [(String, Float)] -> [(String, Float)]
+-- entrada chegou no final, coloca o nó inicial com distância 0
+createDistances [nome] distancias = setNodeCost nome distancias 0
+createDistances (nome1:nome2:dist:rest) distancias =  createDistances rest dist
+    where dist = distancias ++ (createTuple nome1 distancias) ++ (createTuple nome2 distancias)
+
+--função auxiliar para checar se nome existe em tupla de nos
+checkName :: String -> [(String, Float)] -> Bool
+checkName name [] = False
+checkName name (a:as)
+    | name == fst a = True
+    | otherwise = checkName name as
+
+-- cria tupla se nome não estiver presente no vetor original
+createTuple :: String -> [(String, Float)] -> [(String, Float)]
+createTuple name list 
+    | checkName name list = []
+    | otherwise = [(name, 1/0)]
+
+-- cria um vetor de ((nome, nome), dist) que representa as arestas do grafo
+createRelations :: [String] ->  [((String, String), Float)]
+createRelations [nome] = []
+createRelations (nome1:nome2:dist:rest) = [((nome1, nome2), (read dist :: Float)), ((nome2, nome1), (read dist :: Float))] ++ createRelations rest
+
+
+
+
+
+-- escolhe o primeiro da fila e executa getDestinies, depois execute step com todos a origem e destinos obtidos
+-- wrapper _ _ nodes [] = (nodes, [])
+--wrapper relations nodes queue = foldl (\relation -> step relation relations nodes queue) (nodes, queue) 
