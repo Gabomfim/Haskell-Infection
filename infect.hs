@@ -63,7 +63,7 @@ createTuple name list
 -- cria um vetor de ((nome, nome), dist) que representa as arestas do grafo
 createRelations :: [String] ->  [((String, String), Float)]
 createRelations [nome] = []
-createRelations (nome1:nome2:dist:rest) = [((nome1, nome2), (read dist :: Float)), ((nome2, nome1), (read dist :: Float))] ++ createRelations rest
+createRelations (nome1:nome2:freq:rest) = [((nome1, nome2), ((\frq -> 1/frq) (read freq :: Float))), ((nome2, nome1), ((\frq -> 1/frq) (read freq :: Float)))] ++ createRelations rest
 
 
 -- ALGORITMO --
