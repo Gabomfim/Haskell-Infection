@@ -45,20 +45,18 @@ updateCostIfWorth (origin, destiny) relations nodes
 step :: ([Char], [Char]) -> [(([Char], [Char]), Float)] -> [([Char], Float)] -> ([([Char], Float)], [[Char]])
 step (origin, destiny) relations nodes = (updateCostIfWorth (origin, destiny) relations nodes, pruneTree (origin, destiny) relations nodes (getDestinies origin relations))
 
--- gere uma lista (origem, destino) para o primeiro item da fila de nomes
--- escolha a primeira tupla (origem, destino) da lista
--- execute step essa tupla (origem, destino) -> isso removerá a origem da fila de nomes, colocará os destinos nessa fila e atualizará o que for necessário
--- remova essa tupla origem destino da lista de origens e destinos
--- quando essa lista ficar vazia, execute o algoritmo novamente
+
 
 singleLevelDFS :: [(([Char], [Char]), Float)] -> ([([Char], Float)], [[Char]]) -> [([Char], [Char])] -> ([([Char], Float)], [[Char]])
 singleLevelDFS _ (nodes, queue) [] = (nodes, queue)
 singleLevelDFS relations (nodes, nextInQueue) originDestinyList = singleLevelDFS relations (step (head originDestinyList) relations nodes) (tail originDestinyList)
 
--- pra cada item na fila, ele roda o mesmo código
---iterator (node, queue) queue = iterator (head queue) (tail queue):q $ singleLevelDFS relations (nodes, [head queue]) originDestinyList
-
---wrapper :: [(([Char], [Char]), Float)] -> ([([Char], Float)], [[Char]]) -> [([Char], [Char])] -> ([([Char], Float)], [[Char]])
+-- gere uma lista (origem, destino) para o primeiro item da fila de nomes
+-- escolha a primeira tupla (origem, destino) da lista
+-- execute step essa tupla (origem, destino) -> isso removerá a origem da fila de nomes, colocará os destinos nessa fila e atualizará o que for necessário
+-- remova essa tupla origem destino da lista de origens e destinos
+-- quando essa lista ficar vazia, execute o algoritmo novamente
+wrapper :: [(([Char], [Char]), Float)] -> ([([Char], Float)], [[Char]]) -> [([Char], [Char])] -> ([([Char], Float)], [[Char]])
 wrapper _ (nodes, []) _ = (nodes, [])
 wrapper relations (nodes, queue) originDestinyList = (\(n, q) -> wrapper relations (n, (tail queue)++q) (createOriginDestinyList relations n ((tail queue)++q))) $ singleLevelDFS relations (nodes, [head queue]) originDestinyList
 
