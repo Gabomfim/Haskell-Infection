@@ -2,10 +2,9 @@ import System.IO
 import Control.Monad
 import Data.List
 
-main = do  
-        handle <- openFile "in1.txt" ReadMode
-        contents <- hGetContents handle
-        let list_pacients = words contents
+main = do
+        input <- getContents
+        let list_pacients = words input
         let tuples = interpreter list_pacients
         let fifo = fst(fst tuples)
         let infected = snd(fst tuples)
