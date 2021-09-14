@@ -1,5 +1,10 @@
-antonio beto 5.4
-antonio denise 1.2
-fabio edite  9.3
-antonio fabio 2.0
-antonio
+a b 5
+a c 5
+a d 3.33
+c e 10
+c d 2.5
+d f 1.66
+d g 10
+f g 5
+
+a

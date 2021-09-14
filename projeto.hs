@@ -1,3 +1,10 @@
+-- Projeto 1 MC346
+-- Desenvolvido por:
+-- Felipe Arruda 196862
+-- Renata Lellis 205320
+-- Gabriel Silveira 197244
+
+
 import System.IO  
 import Control.Monad
 import Data.List
@@ -111,7 +118,17 @@ singleLevelDFS relations (nodes, nextInQueue) originDestinyList = singleLevelDFS
 -- quando essa lista ficar vazia, execute o algoritmo novamente
 wrapper :: [(([Char], [Char]), Float)] -> ([([Char], Float)], [[Char]]) -> [([Char], [Char])] -> ([([Char], Float)], [[Char]])
 wrapper _ (nodes, []) _ = (nodes, [])
-wrapper relations (nodes, queue) originDestinyList = (\(n, q) -> wrapper relations (n, (tail queue)++q) (createOriginDestinyList relations n ((tail queue)++q))) $ singleLevelDFS relations (nodes, [head queue]) originDestinyList
+wrapper relations (nodes, queue) originDestinyList = (\(n, q) -> wrapper relations (n, ((tail queue)++(addIfWorth relations nodes (head queue) q))) (createOriginDestinyList relations n ((tail queue)++(addIfWorth relations nodes (head queue) q)))) $ singleLevelDFS relations (nodes, [head queue]) originDestinyList
+
+addIfWorth :: [(([Char], [Char]), Float)] -> [([Char], Float)] -> [Char] -> [String] -> [String]
+
+
+addIfWorth relations nodes origin [] = []
+addIfWorth relations nodes origin q
+    | isWorth (origin, head q) relations nodes = (head q):(addIfWorth relations nodes origin (tail q))
+    | otherwise = (addIfWorth relations nodes origin (tail q))
+
+
 
 -- começa o algoritmo | queue deve conter apenas o infectado | nodes devem começar todos com infinito, menos o infectado, que deve ter peso 0.
 run :: [(([Char], [Char]), Float)] -> ([([Char], Float)], [[Char]]) -> Float
